@@ -1,0 +1,78 @@
+﻿@model List<GlobalEntity.Patient>
+
+<h1 class="my-md-5 text-success fw-bolder">Patients</h1>
+
+
+<a class="btn btn-primary mb-lg-3" asp-area="" asp-controller="Patients" asp-action="Create">Add New Patient</a>
+
+
+<div class="card">
+    
+      <div class="card-body">
+            <div class="card-title">
+                <h3 class="my-2">Patients Listing</h3>
+            </div>
+
+         <table class="table table-bordered table-striped">
+             <thead class="bg-dark text-white">
+                 <tr>
+                    <td>Serial</td>
+                    <td>Firstname</td>
+                    <td>Lastname</td>
+                    <td>Gender</td>
+                    <td>Date of Birth</td>
+                    <td>Contact Number</td>
+                    <td>Action</td>
+
+                 </tr>
+             </thead>
+             <tbody>
+                 @foreach (GlobalEntity.Patient item in Model)
+                 {<tr>
+                        <td id="pid">
+                            @Html.DisplayFor(itemdisplay => item.PatientId) 
+                            @Html.HiddenFor(itemdisplay => item.PatientId)
+                        </td>
+                    <td>@Html.DisplayFor(itemdisplay => item.FirstName)</td>
+                    <td>@Html.DisplayFor(itemdisplay => item.LastName)</td>
+                    <td>@Html.DisplayFor(itemdisplay => item.Gender)</td>
+                    <td>@Html.DisplayFor(itemdisplay => item.DateOfBirth)</td>
+                    <td>@Html.DisplayFor(itemdisplay => item.ContactNo)</td>
+                        <td><a onclick="handleEdit(this)" class="btn btn-primary">Edit</a> | <a class="btn btn-danger" onclick="handleRemove(this)">Remove</a></td>
+                 </tr>
+                 }
+             </tbody>
+          </table>
+      </div>
+</div>
+    
+<script type="text/javascript">
+    
+        
+    function handleEdit(element) {
+        var PatientID = $(element).closest('tr').find('input[type=hidden]').val();
+        window.location.href = "/Patients/Edit?PatientID=" + PatientID;
+    }   
+    function handleRemove(element) {
+        var PatientID = $(element).closest('tr').find('input[type=hidden]').val();
+        if (confirm("Do you want to remove?")) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Patients/Remove",
+                data: { "PatientID" : PatientID },
+                success: function (data) {
+                    if (data == 'pass') {
+                        alert("Removed Successfully.");
+                        window.location.reload();
+                        
+
+                    } else {
+                        alert("Faliure due to: " + data)
+                    }
+                }
+            });
+        }
+    }
+
+</script>
